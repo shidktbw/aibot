@@ -8,7 +8,7 @@ import pygetwindow as gw
 game_win = gw.getWindowsWithTitle("Minecraft")[0] #ur window
 
 # Load  model
-model = YOLO(r"best.pt")
+model = YOLO(r"Players.pt")
 
 # Capture and process the screenshot
 def capture_screenshot():
