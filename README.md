@@ -14,5 +14,5 @@ If you want to improve the neural network, you need to improve the model's datas
 *  To change the model, click [there](https://github.com/shidktbw/NeuralCraftAim/blob/main/main.py#L8).
 
 
-Credits:
+# Credits:
  *   [ultralytics](https://github.com/ultralytics/ultralytics)
