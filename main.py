@@ -13,7 +13,7 @@ game_win = gw.getWindowsWithTitle("Minecraft")[0]
 # model
 model = YOLO('best.pt')
 
-mouse = Mouse()
+
 
 def capture():
     #main capture
