@@ -3,7 +3,6 @@ import cv2
 import numpy as np
 import pyautogui
 import pygetwindow as gw
-from mouse import Mouse
 import os
 
 os.system('cls')
