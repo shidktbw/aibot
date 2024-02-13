@@ -43,7 +43,7 @@ def aim_and_click(boxes, win_left, win_top):
 
         pyautogui.moveTo(int(x_center + win_left), int(y_center + win_top))
         pyautogui.click()
-  #      pyautogui sucks 
+  #     pyautogui sucks 
 
 def main():
     os.system('cls')
