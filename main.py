@@ -24,7 +24,7 @@ class GameWindow:
 
         return cropped, win_left, win_top
 
-class Model_Detector:
+class Detect:
     def __init__(self, model_path):
         self.model = YOLO(model_path)
 
@@ -48,12 +48,12 @@ def aim_and_click(boxes, win_left, win_top):
 def main():
     os.system('cls')
     game_window = GameWindow("Minecraft")
-    detector = Model_Detector('best.pt')
+    model = Detect('best.pt')
 
     while True:
         cropped, win_left, win_top = game_window.capture_screen()
-        boxes, names = detector.detect_objects(cropped)
+        boxes, names = model.detect_objects(cropped)
         aim_and_click(boxes, win_left, win_top)
 
 if __name__ == "__main__":
-    main()
+    main()  
