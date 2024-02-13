@@ -48,7 +48,7 @@ def aim_and_click(boxes, win_left, win_top):
 def main():
     os.system('cls')
     game_window = GameWindow("Minecraft")
-    model = Detect('best.pt')
+    model = Detect('players.pt')
 
     while True:
         cropped, win_left, win_top = game_window.capture_screen()
