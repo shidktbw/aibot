@@ -1,67 +1,59 @@
 from ultralytics import YOLO
-import cv2
-import numpy as np
-import pyautogui
 import pygetwindow as gw
+import pyautogui
+import numpy as np
+import cv2
 import os
 
-os.system('cls')
-#ur window 
-game_win = gw.getWindowsWithTitle("Minecraft")[0] 
 
-# model
-model = YOLO('best.pt')
+class GameWindow:
+    def __init__(self, title):
+        self.game_win = gw.getWindowsWithTitle(title)[0]
 
+    def capture_screen(self, capture_width=800, capture_height=600):
+        screen = np.array(pyautogui.screenshot())
 
+        win_left, win_top = self.game_win.topleft
+        win_width, win_height = self.game_win.size
 
-def capture():
-    #main capture
-    screen = np.array(pyautogui.screenshot())
-    
-    #calc size
-    win_left, win_top = game_win.topleft
-    win_width, win_height = game_win.size
+        start_x = win_left + (win_width - capture_width) // 2
+        start_y = win_top + (win_height - capture_height) // 2
 
-    capture_width, capture_height = 800, 600  # so, its capture zone (px)
+        cropped = screen[start_y:start_y+capture_height, start_x:start_x+capture_width]
+        cropped = cv2.cvtColor(cropped, cv2.COLOR_RGB2BGR)
 
-    # $ize window for our capture
-    start_x = win_left + (win_width - capture_width) // 2
-    start_y = win_top + (win_height - capture_height) // 2
- 
-    #cut our window to our zone window
-    cropped = screen[start_y:start_y+capture_height, start_x:start_x+capture_width]
+        return cropped, win_left, win_top
 
-    # rbg to bgr
-    cropped = cv2.cvtColor(cropped, cv2.COLOR_RGB2BGR)
+class ObjectDetector:
+    def __init__(self, model_path):
+        self.model = YOLO(model_path)
 
-    #settings for model
-    predictions = model.predict(cropped, conf=0.4, show=True, show_labels=True, show_conf=True, line_width=2, device='cpu') #conf = 0.3 cuz idc abt dataset    
- 
-    # get info abt size/name/etc
-    boxes = predictions[0].boxes
-    names = predictions[0].names
+    def detect_objects(self, image):
+        predictions = self.model.predict(image, conf=0.4, show=True, show_labels=True, show_conf=True, line_width=2, device='cpu')
+        boxes = predictions[0].boxes
+        names = predictions[0].names
 
-    #making sure we have even one object
+        return boxes, names
+
+def aim_and_click(boxes, win_left, win_top):
     if boxes.xyxy.shape[0] != 0:
-        xywh = boxes.xywh[0]  #get info about xywh
-        xyxy = boxes.xyxy[0]  #get info about xyxy
-        
-        #get center of object
+        xyxy = boxes.xyxy[0]
         x_center = (xyxy[0] + xyxy[2]) / 2
         y_center = (xyxy[1] + xyxy[3]) / 2
-        
-        # aim xD
+
         pyautogui.moveTo(int(x_center + win_left), int(y_center + win_top))
         pyautogui.click()
+  #      pyautogui sucks 
 
-   # else:
-    #    print("No objects detected")
-    
-    return cropped
+def main():
+    os.system('cls')
+    game_window = GameWindow("Minecraft")
+    detector = ObjectDetector('best.pt')
 
-# whileeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
-while True:
-    cropped = capture()
+    while True:
+        cropped, win_left, win_top = game_window.capture_screen()
+        boxes, names = detector.detect_objects(cropped)
+        aim_and_click(boxes, win_left, win_top)
 
-
-
+if __name__ == "__main__":
+    main()
